@@ -41,8 +41,16 @@ app.MapPost("/move", (GameStatusRequest gameStatusRequest) =>
 {
     var direction = new List<string> { "down", "left", "right", "up" };
 
-    DirectionHandler.CheckBordersOut(direction, gameStatusRequest.You.Head, gameStatusRequest.Board.Width, gameStatusRequest.Board.Height);
-    DirectionHandler.CheckMove2Self(direction, gameStatusRequest.You.Head, gameStatusRequest.You.Body);
+    List<SnakeHandler> handlers = new List<SnakeHandler>()
+    {
+        //—юда хэндлеры накидать
+        new BordersOutHandler(),
+        new SnakesCollisionHandler(),
+    };
+    foreach(var handler in handlers)
+    {
+        handler.Handle(direction, gameStatusRequest);
+    }
 
     return new MoveResponse
     {
