@@ -41,16 +41,7 @@ app.MapPost("/move", (GameStatusRequest gameStatusRequest) =>
 {
     var direction = new List<string> { "down", "left", "right", "up" };
 
-    List<SnakeHandler> handlers = new List<SnakeHandler>()
-    {
-        //—юда хэндлеры накидать
-        new BordersOutHandler(),
-        new SnakesCollisionHandler(),
-    };
-    foreach(var handler in handlers)
-    {
-        handler.Handle(direction, gameStatusRequest);
-    }
+    BaseHandler.Handle(direction, gameStatusRequest);
 
     return new MoveResponse
     {

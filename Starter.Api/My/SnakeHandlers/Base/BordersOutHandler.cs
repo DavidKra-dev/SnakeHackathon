@@ -2,7 +2,7 @@
 
 namespace Starter.Api
 {
-    public class BordersOutHandler : SnakeHandler
+    public class BordersOutHandler : ISnakeHandler
     {
         public void Handle(List<string> directions, GameStatusRequest context)
         {
