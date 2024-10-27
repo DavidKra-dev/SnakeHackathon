@@ -34,7 +34,7 @@
             else if (value.X == 0 && value.Y == -1)
                 return "down";
             else
-                return null;
+                return "havent idea...";
         }
     }
 }

@@ -15,10 +15,10 @@ app.MapGet("/", () =>
     return new InitResponse
     {
         ApiVersion = "1",
-        Author = "",
-        Color = "#FFFFFF",
-        Head = "default",
-        Tail = "default"
+        Author = "WRLD ON DRUGS",
+        Color = "#ff0066",
+        Head = "crystal-power",
+        Tail = "crystal-power"
     };
 });
 
@@ -41,7 +41,10 @@ app.MapPost("/move", (GameStatusRequest gameStatusRequest) =>
 {
     var direction = new List<string> { "down", "left", "right", "up" };
 
+    Console.WriteLine("TURN: " + gameStatusRequest.Turn + " -----------------------------");
     BaseHandler.Handle(direction, gameStatusRequest);
+    if (direction.Count > 1)
+        new TrapHandler() { MaxSteps = 11 }.Handle(direction, gameStatusRequest);
 
     return new MoveResponse
     {

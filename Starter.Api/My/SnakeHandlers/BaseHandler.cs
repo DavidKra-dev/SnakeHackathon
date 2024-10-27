@@ -14,7 +14,8 @@ namespace Starter.Api
         {
             foreach (var handler in _handlers)
             {
-                handler.Handle(directions, context);
+                if (directions.Count > 1)
+                    handler.Handle(directions, context);
             }
         }
     }
