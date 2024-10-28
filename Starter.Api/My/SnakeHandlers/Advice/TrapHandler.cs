@@ -4,54 +4,65 @@ namespace Starter.Api
 {
     public class TrapHandler : ISnakeHandler
     {
-        public int MaxSteps { get; set; }
-
-        private int _currentSteps;
-        private List<Coordinate> _visitiedSteps = new List<Coordinate>();
+        private List<Coordinate> _visitedSteps = new List<Coordinate>();
+        private Stack<Coordinate> _notVisitedSteps = new Stack<Coordinate>();
 
         public void Handle(List<string> directions, GameStatusRequest context)
         {
-            for (int i = 0; i < directions.Count; i++)
+            Dictionary<string, int> stepsCount = new Dictionary<string, int>();
+            foreach (var dir in directions)
             {
-                _currentSteps = 0;
-                _visitiedSteps.Clear();
-                var isSaveWay = Analyze(directions[i], context, context.You.Head);
-                Console.WriteLine(directions[i] + " " + isSaveWay);
-                if (!isSaveWay)
+                _visitedSteps.Clear();
+                _notVisitedSteps.Clear();
+
+                Coordinate dirVec = StringDirectionConverter.String2Dir(dir);
+                Coordinate dirHeadPos = new Coordinate(context.You.Head.X + dirVec.X, context.You.Head.Y + dirVec.Y);
+                _notVisitedSteps.Push(dirHeadPos);
+                DFS(context);
+
+                stepsCount.Add(dir, _visitedSteps.Count);
+            }
+
+            int lowestDir = 0;
+            string lowestDirName = "";
+            foreach (var step in stepsCount)
+            {
+                if (step.Value > lowestDir)
                 {
-                    directions.RemoveAt(i);
+                    lowestDir = step.Value;
+                    lowestDirName = step.Key;
                 }
             }
-            Console.WriteLine();
+            directions.Remove(lowestDirName);
         }
 
-        public bool Analyze(string direction, GameStatusRequest context, Coordinate headPos)
+        public void DFS(GameStatusRequest context)
         {
-            Coordinate dirVec = StringDirectionConverter.String2Dir(direction);
+            var headPos = _notVisitedSteps.Pop();
 
-            Coordinate nextHeadPos = new Coordinate(headPos.X + dirVec.X, headPos.Y + dirVec.Y); 
-            foreach (var step in _visitiedSteps)
-                if (nextHeadPos.X == step.X && nextHeadPos.Y == step.Y)
-                    return false;
-            var nextSaveDirs = new List<string> { "down", "left", "right", "up" };
-            nextSaveDirs.Remove(StringDirectionConverter.Dir2String(new Coordinate(headPos.X - nextHeadPos.X, headPos.Y - nextHeadPos.Y)));
-            new BordersOutHandler().Handle(nextSaveDirs, context, nextHeadPos);
-            new SnakesCollisionHandler().Handle(nextSaveDirs, context, nextHeadPos);
+            var directions = new List<string> { "down", "left", "right", "up" };
+            foreach (var dir in directions)
+            {
+                var dirVec = StringDirectionConverter.String2Dir(dir);
+                var nextHeadPos = new Coordinate(headPos.X + dirVec.X, headPos.Y + dirVec.Y);
+                foreach (var visited in _visitedSteps)
+                {
+                    if (nextHeadPos.X == visited.X && nextHeadPos.Y == visited.Y)
+                        directions.Remove(dir);
+                }
+            }
+            new BordersOutHandler().Handle(directions, context, headPos);
+            new SnakesCollisionHandler().Handle(directions, context, headPos);
 
-            _currentSteps++;
-            _visitiedSteps.Add(headPos);
-
-            Console.WriteLine(_currentSteps);
-            Console.WriteLine(" X: " + dirVec.X + " Y: " + dirVec.Y);
-            Console.WriteLine(" X: " + headPos.X + " Y: " + headPos.Y);
-            Console.WriteLine(" X: " + nextHeadPos.X + " Y: " + nextHeadPos.Y);
-
-            if (nextSaveDirs.Count < 1)
-                return false;
-            if (_currentSteps == MaxSteps)
-                return true;
-
-            return Analyze(nextSaveDirs[0], context, nextHeadPos);
+            foreach (var dir in directions)
+            {
+                var dirVec = StringDirectionConverter.String2Dir(dir);
+                var nextHeadPos = new Coordinate(headPos.X + dirVec.X, headPos.Y + dirVec.Y);
+                _notVisitedSteps.Push(nextHeadPos);
+            }
+            _visitedSteps.Add(headPos);
+            if (_notVisitedSteps.Count > 0)
+                DFS(context);
         }
     }
 }
