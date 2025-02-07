@@ -27,10 +27,7 @@ app.MapGet("/", () =>
 /// Every game has a unique ID that can be used to allocate resources or data you may need.
 /// Your response to this request will be ignored.
 /// </summary>
-app.MapPost("/start", (GameStatusRequest gameStatusRequest) =>
-{
-    Results.Ok();
-});
+app.MapPost("/start", (GameStatusRequest gameStatusRequest) => { Results.Ok(); });
 
 /// <summary>
 /// This request will be sent for every turn of the game.
@@ -39,13 +36,23 @@ app.MapPost("/start", (GameStatusRequest gameStatusRequest) =>
 /// </summary>
 app.MapPost("/move", (GameStatusRequest gameStatusRequest) =>
 {
+    Console.WriteLine($"TURN: {gameStatusRequest.Turn} -----------------------------");
+
+    // Массив будущих ходов
     var direction = new List<string> { "down", "left", "right", "up" };
+    
+    // Обработчики добавлят!
+    List<ISnakeHandler> handlers = new List<ISnakeHandler>()
+    {
+        new BordersOutHandler(),
+        new SelfCollisionHandler()
+    };
 
-    Console.WriteLine("TURN: " + gameStatusRequest.Turn + " -----------------------------");
-
-    BaseHandler.Handle(direction, gameStatusRequest);
-    new TrapHandler().Handle(direction, gameStatusRequest);
-
+    // Обработчики вызыват!
+    foreach (var h in handlers)
+        h.Handle(direction, gameStatusRequest);
+    
+    
     return new MoveResponse
     {
         Move = direction[Random.Shared.Next(direction.Count)],
@@ -58,9 +65,6 @@ app.MapPost("/move", (GameStatusRequest gameStatusRequest) =>
 /// Use it to learn how your Battlesnake won or lost and deallocated any server-side resources.
 /// Your response to this request will be ignored.
 /// </summary>
-app.MapPost("/end", (GameStatusRequest gameStatusRequest) =>
-{
-    Results.Ok();
-});
+app.MapPost("/end", (GameStatusRequest gameStatusRequest) => { Results.Ok(); });
 
 app.Run();
