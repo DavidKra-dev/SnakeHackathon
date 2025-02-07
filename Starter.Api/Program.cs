@@ -41,22 +41,21 @@ app.MapPost("/move", (GameStatusRequest gameStatusRequest) =>
 {
     Console.WriteLine($"TURN: {gameStatusRequest.Turn} -----------------------------");
     
-    
-    
+    // Возможные ходы
     var direction = new List<string> { "down", "left", "right", "up" };
+    
+    // Обработчики добавлят!
     List<ISnakeHandler> handlers = new List<ISnakeHandler>()
     {
         new BordersOutHandler(),
-        new SnakesCollisionHandler()
+        new SelfCollisionHandler()
     };
-
     
-    
+    // Обработчики вызыват!
     foreach (var h in handlers)
         h.Handle(direction, gameStatusRequest);
     
     
-
     return new MoveResponse
     {
         Move = direction[Random.Shared.Next(direction.Count)],

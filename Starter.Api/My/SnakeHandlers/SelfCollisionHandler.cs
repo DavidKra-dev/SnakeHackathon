@@ -8,7 +8,7 @@ namespace Starter.Api
         {
             List<Coordinate> directionsVec = new List<Coordinate>();
             foreach (var dir in directions)
-                directionsVec.Add(StringDirectionConverter.String2Dir(dir));
+                directionsVec.Add(dir.String2Dir());
 
             foreach (var body in context.You.Body)
             {
@@ -22,7 +22,7 @@ namespace Starter.Api
 
             directions.Clear();
             foreach(var dir in directionsVec)
-                directions.Add(StringDirectionConverter.Dir2String(dir));
+                directions.Add(dir.Dir2String());
         }
     }
 }

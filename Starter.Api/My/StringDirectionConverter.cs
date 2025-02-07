@@ -2,7 +2,7 @@
 {
     public static class StringDirectionConverter
     {
-        public static Coordinate String2Dir(string value)
+        public static Coordinate String2Dir(this string value)
         {
             Coordinate newCord = new Coordinate(0, 0);
             switch (value)
@@ -28,7 +28,7 @@
             return newCord;
         }
 
-        public static string Dir2String(Coordinate value)
+        public static string Dir2String(this Coordinate value)
         {
             if (value.X == -1 && value.Y == 0)
                 return "left";
