@@ -26,28 +26,5 @@ namespace Starter.Api
                 directions.Remove("up");
             }
         }
-
-        public void Handle(List<string> directions, GameStatusRequest context, Coordinate headPosition)
-        {
-            if (headPosition.X == 0)
-            {
-                directions.Remove("left");
-            }
-
-            if (headPosition.X == context.Board.Width - 1)
-            {
-                directions.Remove("right");
-            }
-
-            if (headPosition.Y == 0)
-            {
-                directions.Remove("down");
-            }
-
-            if (headPosition.Y == context.Board.Height - 1)
-            {
-                directions.Remove("up");
-            }
-        }
     }
 }

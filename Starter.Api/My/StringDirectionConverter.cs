@@ -8,18 +8,23 @@
             switch (value)
             {
                 case "left":
-                    newCord.X = -1; newCord.Y = 0;
+                    newCord.X = -1;
+                    newCord.Y = 0;
                     break;
                 case "right":
-                    newCord.X = 1; newCord.Y = 0;
+                    newCord.X = 1;
+                    newCord.Y = 0;
                     break;
                 case "up":
-                    newCord.X = 0; newCord.Y = 1;
+                    newCord.X = 0;
+                    newCord.Y = 1;
                     break;
                 case "down":
-                    newCord.X = 0; newCord.Y = -1;
+                    newCord.X = 0;
+                    newCord.Y = -1;
                     break;
             }
+
             return newCord;
         }
 
@@ -27,14 +32,14 @@
         {
             if (value.X == -1 && value.Y == 0)
                 return "left";
-            else if (value.X == 1 && value.Y == 0)
+            if (value.X == 1 && value.Y == 0)
                 return "right";
-            else if (value.X == 0 && value.Y == 1)
+            if (value.X == 0 && value.Y == 1)
                 return "up";
-            else if (value.X == 0 && value.Y == -1)
+            if (value.X == 0 && value.Y == -1)
                 return "down";
-            else
-                return "havent idea...";
+
+            return "havent idea...";
         }
     }
 }

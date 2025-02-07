@@ -39,12 +39,23 @@ app.MapPost("/start", (GameStatusRequest gameStatusRequest) =>
 /// </summary>
 app.MapPost("/move", (GameStatusRequest gameStatusRequest) =>
 {
+    Console.WriteLine($"TURN: {gameStatusRequest.Turn} -----------------------------");
+    
+    
+    
     var direction = new List<string> { "down", "left", "right", "up" };
+    List<ISnakeHandler> handlers = new List<ISnakeHandler>()
+    {
+        new BordersOutHandler(),
+        new SnakesCollisionHandler()
+    };
 
-    Console.WriteLine("TURN: " + gameStatusRequest.Turn + " -----------------------------");
-
-    BaseHandler.Handle(direction, gameStatusRequest);
-    new TrapHandler().Handle(direction, gameStatusRequest);
+    
+    
+    foreach (var h in handlers)
+        h.Handle(direction, gameStatusRequest);
+    
+    
 
     return new MoveResponse
     {
